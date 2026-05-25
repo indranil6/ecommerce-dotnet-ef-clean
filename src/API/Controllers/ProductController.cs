@@ -12,7 +12,7 @@ namespace API.Controllers;
 public class ProductController : BaseApiController
 {
     [HttpPost]
-    public async Task<ActionResult<Guid>> CreateProduct(Product product)
+    public async Task<ActionResult<Product>> CreateProduct(Product product)
     {
         var command = new CreateProduct.Command
         {
@@ -21,8 +21,12 @@ public class ProductController : BaseApiController
             CategoryId = product.CategoryId
         };
 
-        var productId = await Mediator.Send(command);
-        return Ok(productId);
+        var createdProduct = await Mediator.Send(command);
+        return Ok(new
+        {
+            Message = "Product created successfully",
+            Product = createdProduct
+        });
     }
 
     [HttpGet]

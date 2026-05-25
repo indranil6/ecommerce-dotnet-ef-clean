@@ -7,14 +7,14 @@ namespace Application.Categories.Commands;
 
 public class CreateCategory
 {
-    public class Command : IRequest<string>
+    public class Command : IRequest<Category>
     {
         public string Name { get; set; } = string.Empty;
     }
 
-    public class Handler(ICategoryRepository categoryRepository) : IRequestHandler<Command, string>
+    public class Handler(ICategoryRepository categoryRepository) : IRequestHandler<Command, Category>
     {
-        public async Task<string> Handle(Command request, CancellationToken cancellationToken)
+        public async Task<Category> Handle(Command request, CancellationToken cancellationToken)
         {
             var category = new Category
             {

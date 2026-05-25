@@ -7,11 +7,11 @@ namespace Persistence.Repositories;
 
 public class ProductRepository(AppDbContext dbContext) : IProductRepository
 {
-    public async Task<string> CreateProductAsync(Product product, CancellationToken cancellationToken)
+    public async Task<Product> CreateProductAsync(Product product, CancellationToken cancellationToken)
     {
         dbContext.Products.Add(product);
         await dbContext.SaveChangesAsync(cancellationToken);
-        return product.Id.GetHashCode().ToString();
+        return product;
     }
 
     public async Task DeleteProductAsync(Guid id, CancellationToken cancellationToken)
@@ -36,9 +36,9 @@ public class ProductRepository(AppDbContext dbContext) : IProductRepository
             .ToListAsync(cancellationToken);
     }
 
-    public Task<List<Product>> GetProductsByCategoryAsync(Guid categoryId, CancellationToken cancellationToken)
+    public async Task<List<Product>> GetProductsByCategoryAsync(Guid categoryId, CancellationToken cancellationToken)
     {
-        return dbContext.Products
+        return await dbContext.Products
             .Include(p => p.Category)
             .Where(p => p.CategoryId == categoryId)
             .ToListAsync(cancellationToken);
@@ -48,5 +48,12 @@ public class ProductRepository(AppDbContext dbContext) : IProductRepository
     {
         dbContext.Products.Update(product);
         await dbContext.SaveChangesAsync(cancellationToken);
+    }
+
+    public async Task<List<Product>> GetProductsByIdsAsync(List<Guid> productIds, CancellationToken cancellationToken)
+    {
+        return await dbContext.Products
+            .Where(p => productIds.Contains(p.Id))
+            .ToListAsync(cancellationToken);
     }
 }

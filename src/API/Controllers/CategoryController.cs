@@ -1,7 +1,9 @@
 using System;
 using Application.Categories.Commands;
 using Application.Categories.Queries;
+using Application.Interfaces;
 using Domain.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers;
@@ -16,12 +18,16 @@ public class CategoryController : BaseApiController
     }
 
     [HttpPost]
-    public async Task<ActionResult<Guid>> CreateCategory(Category category)
+    public async Task<ActionResult<Category>> CreateCategory(Category category)
     {
-        var categoryId = await Mediator.Send(new CreateCategory.Command
+        var createdCategory = await Mediator.Send(new CreateCategory.Command
         {
             Name = category.Name
         });
-        return Ok(categoryId);
+        return Ok(new
+        {
+            Message = "Category created successfully",
+            Category = createdCategory
+        });
     }
 }

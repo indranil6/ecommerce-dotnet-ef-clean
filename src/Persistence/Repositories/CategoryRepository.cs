@@ -7,11 +7,11 @@ namespace Persistence.Repositories;
 
 public class CategoryRepository(AppDbContext dbContext) : ICategoryRepository
 {
-    public async Task<string> CreateCategoryAsync(Category category, CancellationToken cancellationToken = default)
+    public async Task<Category> CreateCategoryAsync(Category category, CancellationToken cancellationToken = default)
     {
         dbContext.Categories.Add(category);
         await dbContext.SaveChangesAsync(cancellationToken);
-        return category.Id.GetHashCode().ToString();
+        return category;
     }
 
     public async Task DeleteCategoryAsync(Guid id, CancellationToken cancellationToken = default)
